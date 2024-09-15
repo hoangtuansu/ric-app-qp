@@ -21,7 +21,7 @@ This Module is temporary for pushing data into influxdb before dpeloyment of QP 
 import datetime
 import time
 import pandas as pd
-from src.database import DATABASE
+from database import DATABASE
 from configparser import ConfigParser
 
 
@@ -56,7 +56,7 @@ class INSERTDATA(DATABASE):
 def populatedb():
     # inintiate connection and create database UEDATA
     db = INSERTDATA()
-    df = pd.read_csv('src/cells.csv')
+    df = pd.read_csv('cells.csv')
     print("Writinig data into influxDB")
     while True:
         db.assign_timestamp(df)

@@ -29,8 +29,8 @@ def forecast(data, cid, nobs=1):
         return
     data = ps.data
     pred = data.tail(1).values
-    if os.path.isfile('src/'+cid) and not ps.constant():
-        model = joblib.load('src/'+cid)
+    if os.path.isfile(cid) and not ps.constant():
+        model = joblib.load(cid)
         pred = model.forecast(y=data.values, steps=nobs)
 
     df_f = pd.DataFrame(pred, columns=data.columns)

@@ -21,7 +21,7 @@ FROM continuumio/miniconda3:23.10.0-1
 RUN mkdir -p /opt/route/
 
 # sdl uses hiredis which needs gcc
-RUN apt update && apt install -y gcc musl-dev
+RUN apt update && apt install -y gcc musl-dev vim
 
 # copy rmr libraries from builder image in lieu of an Alpine package
 ARG RMRVERSION=4.9.0
@@ -32,7 +32,7 @@ RUN rm -f rmr_${RMRVERSION}_amd64.deb rmr-dev_${RMRVERSION}_amd64.deb
 ENV LD_LIBRARY_PATH /usr/local/lib/:/usr/local/lib64
 COPY tests/fixtures/local.rt /opt/route/local.rt
 ENV RMR_SEED_RT /opt/route/local.rt
-
+ENV CONFIG_FILE /opt/ric/config/config-file.json
 # Install
 COPY setup.py /tmp
 COPY LICENSE.txt /tmp/
@@ -40,4 +40,5 @@ RUN pip install /tmp
 COPY src/ /src
 # Run
 ENV PYTHONUNBUFFERED 1
-CMD PYTHONPATH=/src:/usr/lib/python3.11/site-packages/:$PYTHONPATH run-qp.py
+WORKDIR /src
+CMD python main.py

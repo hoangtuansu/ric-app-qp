@@ -121,7 +121,7 @@ def predict(payload):
 
 
 def train_model(cid):
-    if not os.path.isfile('src/'+cid):
+    if not os.path.isfile(cid):
         train(db, cid)
 
 
@@ -167,3 +167,7 @@ def get_stats():
     """
     global qp_xapp
     return {"PredictRequests": qp_xapp.predict_requests}
+
+
+if __name__ == "__main__":
+    start()

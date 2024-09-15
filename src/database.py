@@ -17,7 +17,7 @@
 from influxdb import DataFrameClient
 from configparser import ConfigParser
 from mdclogpy import Logger
-from src.exceptions import NoDataError
+from exceptions import NoDataError
 from influxdb.exceptions import InfluxDBClientError, InfluxDBServerError
 from requests.exceptions import RequestException
 import pandas as pd
@@ -45,7 +45,7 @@ class DATABASE(object):
             self.client.close()
 
         try:
-            self.client = DataFrameClient(self.host, port=self.port, username=self.user, password=self.password, path=self.path, ssl=self.ssl, database=self.dbname, verify_ssl=self.ssl)
+            self.client = DataFrameClient(self.host, port=self.port, username=self.user, password=self.password, database=self.dbname)
             version = self.client.request('ping', expected_response_code=204).headers['X-Influxdb-Version']
             logger.info("Conected to Influx Database, InfluxDB version : {}".format(version))
             return True
@@ -106,15 +106,13 @@ class DATABASE(object):
 
     def config(self):
         cfg = ConfigParser()
-        cfg.read('src/qp_config.ini')
+        cfg.read('qp_config.ini')
         for section in cfg.sections():
             if section == 'influxdb':
                 self.host = cfg.get(section, "host")
                 self.port = cfg.get(section, "port")
                 self.user = cfg.get(section, "user")
                 self.password = cfg.get(section, "password")
-                self.path = cfg.get(section, "path")
-                self.ssl = cfg.get(section, "ssl")
                 self.dbname = cfg.get(section, "database")
                 self.cellmeas = cfg.get(section, "cellmeas")
                 self.uemeas = cfg.get(section, "uemeas")
@@ -133,7 +131,7 @@ class DUMMY(DATABASE):
         super().__init__()
         self.ue_data = pd.DataFrame([[1002, "c2/B13", 8, 69, 65, 113, 0.1, 0.1, "Car-1", -882, -959, pd.to_datetime("2021-05-12T07:43:51.652")]], columns=["du-id", "RF.serving.Id", "prb_usage", "rsrp", "rsrq", "rssinr", "throughput", "targetTput", "ue-id", "x", "y", "measTimeStampRf"])
 
-        self.cell = pd.read_csv('src/cells.csv')
+        self.cell = pd.read_csv('cells.csv')
 
     def read_data(self, meas='ueMeasReport', limit=100000, cellid=False, ueid=False):
         if ueid:

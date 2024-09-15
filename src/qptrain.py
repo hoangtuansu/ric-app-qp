@@ -57,7 +57,7 @@ class PROCESS(object):
             If the column is stationary, perform 1st differencing and return data"""
         df = self.data.copy()
         res_adf = []
-        for name, column in df.iteritems():
+        for name, column in df.items():
             res_adf.append(self.adfuller_test(column))  # Perform ADF test
         if not all(res_adf):
             self.data = df.diff().dropna()
@@ -133,7 +133,7 @@ def train_cid(cid):
         model = VAR(md.data)          # Make a VAR model
         try:
             model_fit = model.fit(lag)            # call fit method with lag order
-            file_name = 'src/'+cid.replace('/', '')
+            file_name = cid.replace('/', '')
             with open(file_name, 'wb') as f:
                 joblib.dump(model_fit, f)     # Save the model with the cell id name
         except ValueError as v:
